@@ -1,0 +1,2301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="تطبيق إسلامي شامل يحتوي على القرآن الكريم، الأذكار، الأحاديث، الأدعية وأكثر">
+    <title>التطبيق الإسلامي الشامل</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* خطوط نظامية عربية بدون انترنت */
+        :root {
+            --primary-color: #2d6a4f;
+            --secondary-color: #1b4332;
+            --accent-color: #40916c;
+            --text-color: #1b4332;
+            --bg-color: #f3f4f6;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --night-primary: #a8d5ba;
+            --night-secondary: #4caf50;
+            --night-text: #e8f5e9;
+            --night-bg: #121212;
+            --night-card-bg: rgba(40, 40, 40, 0.85);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tahoma', 'Arial', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            transition: all 0.4s ease;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .night {
+            --primary-color: var(--night-primary);
+            --secondary-color: var(--night-secondary);
+            --text-color: var(--night-text);
+            --bg-color: var(--night-bg);
+            --card-bg: var(--night-card-bg);
+            background: linear-gradient(135deg, var(--night-bg), #1e1e1e);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 5px rgba(163, 177, 138, 0.5);
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .night h1 {
+            text-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--primary-color);
+        }
+
+        .night h2 {
+            color: var(--night-primary);
+        }
+
+        .toggle-night {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: rgba(45, 106, 79, 0.7);
+            color: #fff;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .toggle-night:hover {
+            background: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .night .toggle-night {
+            background: rgba(168, 213, 186, 0.7);
+            color: #121212;
+        }
+
+        .btn {
+            display: block;
+            background: rgba(45, 106, 79, 0.9);
+            color: #fff;
+            padding: 15px;
+            margin: 12px auto;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 80%;
+            max-width: 320px;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 4px 12px rgba(45, 106, 79, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(45, 106, 79, 0.5);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .night .btn {
+            background: rgba(76, 175, 80, 0.7);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        }
+
+        .night .btn:hover {
+            background: rgba(76, 175, 80, 0.9);
+        }
+
+        .section {
+            display: none;
+            background: var(--card-bg);
+            padding: 1.8rem;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .night .section {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .hadith-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(204, 227, 220, 0.5);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 15px 0;
+            font-size: 1.15rem;
+            line-height: 1.9;
+            text-align: right;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+            direction: rtl;
+            position: relative;
+        }
+
+        .hadith-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .hadith-card::before {
+            content: "📜 ";
+            font-size: 1.3rem;
+        }
+
+        .hadith-card .ref {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            font-style: italic;
+        }
+
+        .night .hadith-card {
+            border-color: #555;
+        }
+
+        .night .hadith-card .ref {
+            color: var(--night-primary);
+        }
+
+        .btn.back-btn {
+            background-color: #0d6efd;
+            margin-top: 30px;
+            width: auto;
+            display: inline-block;
+            padding: 10px 25px;
+        }
+
+        .btn.back-btn:hover {
+            background-color: #084298;
+        }
+
+        .night .btn.back-btn {
+            background-color: #1e88e5;
+        }
+
+        .night .btn.back-btn:hover {
+            background-color: #1565c0;
+        }
+
+        /* أسلوب جديد لبطاقات الصوت */
+        .audio-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 500px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .audio-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .audio-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        audio {
+            width: 100%;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        audio::-webkit-media-controls-panel {
+            background: var(--card-bg);
+        }
+
+        /* شريط التقدم */
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .night .progress-container {
+            background: #333;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* قائمة التنقل */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 10px 15px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .nav-tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .night .nav-tab {
+            color: var(--night-primary);
+        }
+
+        .night .nav-tab.active {
+            border-bottom: 2px solid var(--night-primary);
+        }
+
+        /* البحث */
+        .search-container {
+            margin: 20px auto;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 15px rgba(45, 106, 79, 0.2);
+        }
+
+        .night .search-input {
+            border-color: #555;
+            background: rgba(50, 50, 50, 0.8);
+        }
+
+        .night .search-input:focus {
+            border-color: var(--night-primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+        }
+
+        .night .search-icon {
+            color: var(--night-primary);
+        }
+
+        /* العداد */
+        .counter-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .counter-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .counter-btn:hover {
+            background: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .counter-display {
+            margin: 0 15px;
+            font-size: 1.2rem;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        /* التأكيد على الأذكار */
+        .highlight {
+            background-color: rgba(255, 255, 0, 0.3);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        /* فواصل */
+        .divider {
+            border: none;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+            margin: 20px auto;
+            width: 80%;
+        }
+
+        .night .divider {
+            background: linear-gradient(to right, transparent, var(--night-primary), transparent);
+        }
+
+        /* تأثيرات الحركة */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* التذييل */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        .night footer a {
+            color: var(--night-primary);
+        }
+
+        .night footer a:hover {
+            color: #4caf50;
+        }
+
+        /* التكيف مع الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                font-size: 1rem;
+                padding: 12px;
+                width: 90%;
+            }
+
+            .section {
+                padding: 1.2rem;
+            }
+
+            .hadith-card {
+                padding: 15px;
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .toggle-night {
+                top: 10px;
+                left: 10px;
+                padding: 6px 12px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-tab {
+                margin: 5px 0;
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* أسلوب جديد لقائمة الأذكار */
+        .azkar-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .azkar-list li {
+            background: var(--card-bg);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            padding-right: 40px;
+        }
+
+        .azkar-list li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .night .azkar-list li {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .azkar-list li::before {
+            content: "🕌";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+        /* أسلوب جديد لصفحة القرآن */
+        .surah-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: right;
+        }
+
+        .surah-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .surah-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .surah-card .surah-meta {
+            font-size: 0.9rem;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .night .surah-card .surah-meta {
+            color: #aaa;
+        }
+
+        /* زر الإضافات */
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .floating-btn:hover {
+            background: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .night .floating-btn {
+            background: var(--night-primary);
+            color: #121212;
+        }
+
+        /* قائمة الإضافات */
+        .extras-menu {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            z-index: 99;
+            display: none;
+            flex-direction: column;
+            width: 200px;
+        }
+
+        .extras-menu.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .extra-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .extra-item:hover {
+            background: rgba(45, 106, 79, 0.1);
+        }
+
+        .night .extra-item:hover {
+            background: rgba(76, 175, 80, 0.2);
+        }
+
+        .extra-item i {
+            margin-left: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* شريط الأدوات السفلي */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 98;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .nav-item:hover {
+            background: rgba(45, 106, 79, 0.1);
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            margin-bottom: 3px;
+        }
+
+        .night .nav-item {
+            color: var(--night-primary);
+        }
+
+        .night .nav-item:hover {
+            background: rgba(76, 175, 80, 0.2);
+        }
+
+        /* شريط التقدم في الصوت */
+        .audio-progress {
+            width: 100%;
+            height: 5px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .audio-progress-filled {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 5px;
+            width: 0%;
+        }
+
+        .night .audio-progress {
+            background: #333;
+        }
+
+        .night .audio-progress-filled {
+            background: var(--night-primary);
+        }
+
+        /* عناصر التحكم في الصوت */
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .audio-time {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .night .audio-time {
+            color: #aaa;
+        }
+
+        /* أسلوب جديد لصفحة الأدعية */
+        .duaa-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            text-align: right;
+        }
+
+        .duaa-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .duaa-card::before {
+            content: "🙏";
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            font-size: 1.5rem;
+        }
+
+        .duaa-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            padding-right: 30px;
+        }
+
+        .night .duaa-card h3 {
+            color: var(--night-primary);
+        }
+
+        /* زر النسخ */
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1rem;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .night .copy-btn {
+            color: var(--night-primary);
+        }
+
+        .night .copy-btn:hover {
+            color: #4caf50;
+        }
+
+        /* تنبيه النسخ */
+        .copy-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .copy-alert.show {
+            opacity: 1;
+        }
+
+        .night .copy-alert {
+            background: var(--night-primary);
+            color: #121212;
+        }
+
+        /* أسلوب جديد لصفحة الأذكار */
+        .azkar-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .azkar-tab {
+            padding: 8px 15px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 20px;
+            background: rgba(45, 106, 79, 0.1);
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .azkar-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .night .azkar-tab {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--night-primary);
+        }
+
+        .night .azkar-tab.active {
+            background: var(--night-primary);
+            color: #121212;
+        }
+
+        /* أسلوب جديد لصفحة القرآن الصوتي */
+        .reciter-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: right;
+        }
+
+        .reciter-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .reciter-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reciter-card .reciter-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .night .reciter-card .reciter-meta {
+            color: #aaa;
+        }
+
+        /* أسلوب جديد لصفحة مواقيت الصلاة */
+        .prayer-time-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .prayer-time-card .prayer-name {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .prayer-time-card .prayer-time {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .prayer-time-card.current {
+            background: rgba(45, 106, 79, 0.2);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .night .prayer-time-card .prayer-name {
+            color: var(--night-primary);
+        }
+
+        .night .prayer-time-card.current {
+            background: rgba(76, 175, 80, 0.2);
+            border-left: 4px solid var(--night-primary);
+        }
+
+        /* أسلوب جديد لصفحة القبلة */
+        .qibla-compass {
+            width: 200px;
+            height: 200px;
+            margin: 30px auto;
+            position: relative;
+            border-radius: 50%;
+            background: var(--card-bg);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qibla-arrow {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            position: absolute;
+            top: 10px;
+            transform-origin: 50% 90px;
+        }
+
+        .qibla-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .night .qibla-arrow {
+            background: var(--night-primary);
+        }
+
+        .night .qibla-text {
+            color: var(--night-primary);
+        }
+
+        /* أسلوب جديد لصفحة التسبيح */
+        .tasbeeh-counter {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .night .tasbeeh-counter {
+            color: var(--night-primary);
+        }
+
+        .tasbeeh-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tasbeeh-btn:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        .night .tasbeeh-btn {
+            background: var(--night-primary);
+            color: #121212;
+        }
+
+        .tasbeeh-reset {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .tasbeeh-reset:hover {
+            background: #d32f2f;
+        }
+
+        /* أسلوب جديد لصفحة الحديث */
+        .hadith-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        /* أسلوب جديد لصفحة الإعدادات */
+        .settings-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .night .setting-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .night input:checked + .slider {
+            background-color: var(--night-primary);
+        }
+
+        /* أسلوب جديد لصفحة المعلومات */
+        .about-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .about-card p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            margin: 0 10px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--secondary-color);
+            transform: scale(1.2);
+        }
+
+        .night .social-link {
+            color: var(--night-primary);
+        }
+
+        .night .social-link:hover {
+            color: #4caf50;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="toggle-night" onclick="toggleNight()">🌙</button>
+
+    <div class="container">
+        <h1>التطبيق الإسلامي الشامل</h1>
+
+        <!-- الواجهة الرئيسية -->
+        <div id="main-menu">
+            <button class="btn" onclick="showSection('morning')">
+                <i class="fas fa-sun" style="margin-left: 8px;"></i> أذكار الصباح والمساء
+            </button>
+            <button class="btn" onclick="showSection('quran')">
+                <i class="fas fa-book-quran" style="margin-left: 8px;"></i> القرآن الكريم
+            </button>
+            <button class="btn" onclick="showSection('hadith')">
+                <i class="fas fa-book" style="margin-left: 8px;"></i> الأحاديث النبوية
+            </button>
+            <button class="btn" onclick="showSection('prayer')">
+                <i class="fas fa-pray" style="margin-left: 8px;"></i> أذكار ما بعد الصلاة
+            </button>
+            <button class="btn" onclick="showSection('duaa')">
+                <i class="fas fa-hands-praying" style="margin-left: 8px;"></i> الأدعية المتنوعة
+            </button>
+            <button class="btn" onclick="showSection('quran-audio')">
+                <i class="fas fa-music" style="margin-left: 8px;"></i> الاستماع للقرآن
+            </button>
+            <button class="btn" onclick="showSection('prayer-times')">
+                <i class="fas fa-clock" style="margin-left: 8px;"></i> مواقيت الصلاة
+            </button>
+            <button class="btn" onclick="showSection('qibla')">
+                <i class="fas fa-compass" style="margin-left: 8px;"></i> اتجاه القبلة
+            </button>
+            <button class="btn" onclick="showSection('tasbeeh')">
+                <i class="fas fa-hashtag" style="margin-left: 8px;"></i> عداد التسبيح
+            </button>
+        </div>
+
+        <!-- المحتويات -->
+
+        <!-- أذكار الصباح والمساء -->
+        <div id="morning" class="section">
+            <div class="azkar-tabs">
+                <div class="azkar-tab active" onclick="changeAzkarTab('morning')">أذكار الصباح</div>
+                <div class="azkar-tab" onclick="changeAzkarTab('evening')">أذكار المساء</div>
+                <div class="azkar-tab" onclick="changeAzkarTab('sleep')">أذكار النوم</div>
+                <div class="azkar-tab" onclick="changeAzkarTab('wakeup')">أذكار الاستيقاظ</div>
+            </div>
+
+            <div id="morning-azkar" class="azkar-content">
+                <h2>أذكار الصباح</h2>
+                <div class="hadith-card">
+                    اللّهـمَّ أَنتَ رَبِّـي لا إله إلا أنتَ، خَلقتَنـي وأنا عبدُك، وأنا على عهدك ووعدك ما استطعتُ، أعوذُ بك
+                    من شرِّ ما صنعتُ، أبوءُ لك بنعمتك عليَّ، وأبوءُ بذنبي، فاغفر لي، فإنه لا يغفر الذنوب إلا أنت.
+                    <span class="ref">(من قالها موقناً بها حين يمسي ومات من ليلته دخل الجنة، وكذلك حين يصبح)</span>
+                </div>
+
+                <div class="hadith-card">
+                    أصبحنا وأصبح الملك لله، والحمد لله، لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء
+                    قدير.
+                    <span class="ref">(من قالها عشر مرات حين يصبح كتب له مائة حسنة، ومحيت عنه مائة سيئة، وكانت له حرزاً من الشيطان حتى يمسي)</span>
+                </div>
+
+                <div class="hadith-card">
+                    رضيت بالله رباً، وبالإسلام ديناً، وبمحمد ﷺ نبياً ورسولاً.
+                    <span class="ref">(من قالها ثلاثاً حين يصبح وحين يمسي كان حقاً على الله أن يرضيه يوم القيامة)</span>
+                </div>
+
+                <div class="hadith-card">
+                    اللّهـمَّ إني أسألك خير ما في هذا اليوم، وخير ما بعده، وأعوذ بك من شر ما في هذا اليوم، وشر ما بعده.
+                </div>
+
+                <div class="hadith-card">
+                    اللّهـمَّ إنّي أعوذ بك من الكسل، وسوء الكبر، والجبن، والبخل، وضلع الدين، وغلبة الرجال.
+                </div>
+
+                <div class="hadith-card">
+                    سبحان الله وبحمده، سبحان الله العظيم.
+                    <span class="ref">(من قالها مائة مرة حين يصبح غفرت ذنوبه وإن كانت مثل زبد البحر)</span>
+                </div>
+
+                <div class="hadith-card">
+                    لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير.
+                    <span class="ref">(من قالها عشر مرات كان كمن أعتق أربعة أنفس من ولد إسماعيل)</span>
+                </div>
+
+                <div class="hadith-card">
+                    حسبي الله لا إله إلا هو عليه توكلت وهو رب العرش العظيم.
+                    <span class="ref">(من قالها سبع مرات كفاه الله ما أهمه)</span>
+                </div>
+
+                <div class="hadith-card">
+                    اللّهـمَّ صلِّ وسلم على نبينا محمد.
+                    <span class="ref">(من صلى على النبي صلى الله عليه وسلم عشراً صلى الله عليه بها مائة)</span>
+                </div>
+
+                <div class="hadith-card">
+                    اللّهـمَّ أنتَ ربي لا إله إلا أنت، خلقتني وأنا عبدك، وأنا على عهدك ووعدك ما استطعت، أعوذ بك من شر ما
+                    صنعت، أبوء لك بنعمتك علي وأبوء بذنبي فاغفر لي، فإنه لا يغفر الذنوب إلا أنت.
+                </div>
+
+                <div class="hadith-card">
+                    أَسْتَغْفِرُ اللهَ وَأتُوبُ إليهِ.
+                    <span class="ref">(من قالها غفرت ذنوبه وإن كانت مثل زبد البحر)</span>
+                </div>
+
+                <div class="hadith-card">
+                    اللّهـمَّ اجعل صباحي هذا صباح خير وبركة، ومساءي مساء سلام وأمان، اللّهـمَّ اجعل لي من كل هم فرجاً، ومن
+                    كل ضيق مخرجاً، ومن كل بلاء عافية.
+                </div>
+            </div>
+
+            <div id="evening-azkar" class="azkar-content" style="display:none;">
+                <h2>أذكار المساء</h2>
+                <div class="hadith-card">
+                    اللّهـمَّ أَنتَ رَبِّـي لا إله إلا أنتَ، خَلقتَنـي وأنا عبدُك، وأنا على عهدك ووعدك ما استطعتُ، أعوذُ بك
+                    من شرِّ ما صنعتُ، أبوءُ لك بنعمتك عليَّ، وأبوءُ بذنبي، فاغفر لي، فإنه لا يغفر الذنوب إلا أنت.
+                    <span class="ref">(من قالها موقناً بها حين يمسي ومات من ليلته دخل الجنة)</span>
+                </div>
+
+                <div class="hadith-card">
+                    أمسينا وأمسى الملك لله، والحمد لله، لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء
+                    قدير.
+                    <span class="ref">(من قالها عشر مرات حين يمسي كتب له مائة حسنة، ومحيت عنه مائة سيئة، وكانت له حرزاً من الشيطان حتى يصبح)</span>
+                </div>
+
+                <div class="hadith-card">
+                    رضيت بالله رباً، وبالإسلام ديناً، وبمحمد ﷺ نبياً ورسولاً.
+                    <span class="ref">(من قالها ثلاثاً حين يمسي كان حقاً على الله أن يرضيه يوم القيامة)</span>
+                </div>
+
+                <div class="hadith-card">
+                    اللّهـمَّ إني أسألك خير ما في هذه الليلة، وخير ما بعدها، وأعوذ بك من شر ما في هذه الليلة، وشر ما بعدها.
+                </div>
+
+                <div class="hadith-card">
+                    سبحان الله وبحمده، سبحان الله العظيم.
+                    <span class="ref">(من قالها مائة مرة حين يمسي غفرت ذنوبه وإن كانت مثل زبد البحر)</span>
+                </div>
+
+                <div class="hadith-card">
+                    لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير.
+                    <span class="ref">(من قالها عشر مرات كان كمن أعتق أربعة أنفس من ولد إسماعيل)</span>
+                </div>
+
+                <div class="hadith-card">
+                    حسبي الله لا إله إلا هو عليه توكلت وهو رب العرش العظيم.
+                    <span class="ref">(من قالها سبع مرات كفاه الله ما أهمه)</span>
+                </div>
+
+                <div class="hadith-card">
+                    اللّهـمَّ صلِّ وسلم على نبينا محمد.
+                    <span class="ref">(من صلى على النبي صلى الله عليه وسلم عشراً صلى الله عليه بها مائة)</span>
+                </div>
+
+                <div class="hadith-card">
+                    أَسْتَغْفِرُ اللهَ وَأتُوبُ إليهِ.
+                    <span class="ref">(من قالها غفرت ذنوبه وإن كانت مثل زبد البحر)</span>
+                </div>
+
+                <div class="hadith-card">
+                    اللّهـمَّ اجعل مساءي هذا مساء خير وبركة، وصبـاحي صباح سلام وأمان، اللّهـمَّ اجعل لي من كل هم فرجاً، ومن
+                    كل ضيق مخرجاً، ومن كل بلاء عافية.
+                </div>
+            </div>
+
+            <div id="sleep-azkar" class="azkar-content" style="display:none;">
+                <h2>أذكار النوم</h2>
+                <div class="hadith-card">
+                    بِاسْمِكَ رَبِّـي وَضَعْـتُ جَنْبِي، وَبِكَ أَرْفَعُـهُ، فَإِنْ أَمْسَـكْتَ نَفْسِي فَارْحَـمْها، وَإِنْ أَرْسَلْتَـها فَاحْفَظْـها بِمـا تَحْفَـظُ بِه عِبـادَكَ الصّـالِحِيـن.
+                    <span class="ref">(من قالها عند نومه ثم مات في ليلته مات على الفطرة)</span>
+                </div>
+
+                <div class="hadith-card">
+                    اللّهُـمَّ قِنِي عَذابَـكَ يَـوْمَ تَبْـعَثُ عِبـادَك.
+                </div>
+
+                <div class="hadith-card">
+                    بِاسْـمِكَ اللّهُـمَّ أَمـوتُ وَأَحْـيا.
+                </div>
+
+                <div class="hadith-card">
+                    سُبْحَانَ اللَّهِ (33) ، الْحَمْدُ لِلَّهِ (33) ، اللَّهُ أَكْبَرُ (34).
+                    <span class="ref">(من قالها عند نومه لم يتعرض لسوء تلك الليلة)</span>
+                </div>
+
+                <div class="hadith-card">
+                    اللّهُـمَّ أَسْـلَمْتُ نَفْـسي إِلَـيْكَ، وَفَوَّضْـتُ أَمْـري إِلَـيْكَ، وَوَجَّـهْتُ وَجْـهي إِلَـيْكَ، وَأَلْـجَـاْتُ ظَهـري إِلَـيْكَ، رَغْبَـةً وَرَهْـبَةً إِلَـيْكَ، لا مَلْجَـأَ وَلا مَنْـجـى مِنْـكَ إِلاّ إِلَـيْكَ، آمَنْـتُ بِكِتـابِكَ الّـذي أَنْزَلْـتَ وَبِنَبِـيِّـكَ الّـذي أَرْسَلْـتَ.
+                    <span class="ref">(من قالها عند نومه ثم مات في ليلته مات شهيداً)</span>
+                </div>
+            </div>
+
+            <div id="wakeup-azkar" class="azkar-content" style="display:none;">
+                <h2>أذكار الاستيقاظ</h2>
+                <div class="hadith-card">
+                    الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ.
+                </div>
+
+                <div class="hadith-card">
+                    لا إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلا إِلَهَ إِلاَّ اللَّهُ، وَاللَّهُ أَكْبَرُ، وَلا حَوْلَ وَلا قُوَّةَ إِلاَّ بِاللَّهِ الْعَلِيِّ الْعَظِيمِ، رَبِّ اغْفِرْ لِي.
+                    <span class="ref">(من قالها غفر له)</span>
+                </div>
+
+                <div class="hadith-card">
+                    اللّهُـمَّ بِكَ أَصْـبَحْنا وَبِكَ أَمْسَـينا، وَبِكَ نَحْـيا وَبِكَ نَمُـوتُ وَإِلَـيْكَ النُّـشُور.
+                </div>
+            </div>
+
+            <button class="btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> رجوع</button>
+        </div>
+
+        <!-- القرآن الكريم -->
+        <div id="quran" class="section">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="ابحث في القرآن..." oninput="searchQuran(this.value)">
+            </div>
+
+            <div id="quran-results">
+                <h2>سور القرآن الكريم</h2>
+                <div class="surah-card" onclick="showAyaat(1, 'الفاتحة')">
+                    <h3>سورة الفاتحة <span>ٱلۡفَاتِحَة</span></h3>
+                    <div class="surah-meta">
+                        <span>مكية</span>
+                        <span>7 آيات</span>
+                    </div>
+                </div>
+
+                <div class="surah-card" onclick="showAyaat(2, 'البقرة')">
+                    <h3>سورة البقرة <span>ٱلۡبَقَرَة</span></h3>
+                    <div class="surah-meta">
+                        <span>مدنية</span>
+                        <span>286 آية</span>
+                    </div>
+                </div>
+
+                <div class="surah-card" onclick="showAyaat(3, 'آل عمران')">
+                    <h3>سورة آل عمران <span>آل عِمۡرَان</span></h3>
+                    <div class="surah-meta">
+                        <span>مدنية</span>
+                        <span>200 آية</span>
+                    </div>
+                </div>
+
+                <div class="surah-card" onclick="showAyaat(4, 'النساء')">
+                    <h3>سورة النساء <span>ٱلنِّسَاء</span></h3>
+                    <div class="surah-meta">
+                        <span>مدنية</span>
+                        <span>176 آية</span>
+                    </div>
+                </div>
+
+                <div class="surah-card" onclick="showAyaat(5, 'المائدة')">
+                    <h3>سورة المائدة <span>ٱلۡمَائِدَة</span></h3>
+                    <div class="surah-meta">
+                        <span>مدنية</span>
+                        <span>120 آية</span>
+                    </div>
+                </div>
+
+                <div class="surah-card" onclick="showAyaat(6, 'الأنعام')">
+                    <h3>سورة الأنعام <span>ٱلۡأَنۡعَام</span></h3>
+                    <div class="surah-meta">
+                        <span>مكية</span>
+                        <span>165 آية</span>
+                    </div>
+                </div>
+
+                <div class="surah-card" onclick="showAyaat(7, 'الأعراف')">
+                    <h3>سورة الأعراف <span>ٱلۡأَعۡرَاف</span></h3>
+                    <div class="surah-meta">
+                        <span>مكية</span>
+                        <span>206 آية</span>
+                    </div>
+                </div>
+
+                <div class="surah-card" onclick="showAyaat(8, 'الأنفال')">
+                    <h3>سورة الأنفال <span>ٱلۡأَنفَال</span></h3>
+                    <div class="surah-meta">
+                        <span>مدنية</span>
+                        <span>75 آية</span>
+                    </div>
+                </div>
+
+                <div class="surah-card" onclick="showAyaat(9, 'التوبة')">
+                    <h3>سورة التوبة <span>ٱلتَّوۡبَة</span></h3>
+                    <div class="surah-meta">
+                        <span>مدنية</span>
+                        <span>129 آية</span>
+                    </div>
+                </div>
+
+                <div class="surah-card" onclick="showAyaat(10, 'يونس')">
+                    <h3>سورة يونس <span>يُونُس</span></h3>
+                    <div class="surah-meta">
+                        <span>مكية</span>
+                        <span>109 آية</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="surah-details" style="display:none;">
+                <h2 id="surah-name"></h2>
+                <div id="surah-content" class="hadith-card" style="text-align: center; font-size: 1.5rem; line-height: 2.5;"></div>
+                <button class="btn back-btn" onclick="backToSuraList()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> العودة للسور</button>
+            </div>
+
+            <button class="btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> رجوع</button>
+        </div>
+
+        <!-- الأحاديث النبوية -->
+        <div id="hadith" class="section">
+            <div class="nav-tabs">
+                <div class="nav-tab active" onclick="changeHadithTab('sahih')">أحاديث صحيحة</div>
+                <div class="nav-tab" onclick="changeHadithTab('qudsi')">أحاديث قدسية</div>
+                <div class="nav-tab" onclick="changeHadithTab('virtues')">فضائل الأعمال</div>
+            </div>
+
+            <div id="sahih-hadith" class="hadith-content">
+                <h2>أحاديث صحيحة</h2>
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "إنما الأعمال بالنيات، وإنما لكل امرئ ما نوى." 
+                    <span class="ref">(متفق عليه)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "من حسن إسلام المرء تركه ما لا يعنيه."
+                    <span class="ref">(رواه الترمذي وقال: حديث حسن صحيح)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه."
+                    <span class="ref">(متفق عليه)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "الكلمة الطيبة صدقة."
+                    <span class="ref">(متفق عليه)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "من كان يؤمن بالله واليوم الآخر فليقل خيراً أو ليصمت."
+                    <span class="ref">(متفق عليه)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "تبسمك في وجه أخيك صدقة."
+                    <span class="ref">(رواه الترمذي وقال: حديث حسن)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "المسلم من سلم المسلمون من لسانه ويده."
+                    <span class="ref">(متفق عليه)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "لا يدخل الجنة من كان في قلبه مثقال ذرة من كبر."
+                    <span class="ref">(رواه مسلم)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "من صلى علي صلاة واحدة صلى الله عليه بها عشراً."
+                    <span class="ref">(رواه مسلم)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "الدين النصيحة." قلنا: لمن؟ قال: "لله ولكتابه ولرسوله ولأئمة المسلمين وعامتهم."
+                    <span class="ref">(رواه مسلم)</span>
+                </div>
+            </div>
+
+            <div id="qudsi-hadith" class="hadith-content" style="display:none;">
+                <h2>أحاديث قدسية</h2>
+                <div class="hadith-card">
+                    قال الله تعالى: "يا عبادي، إني حرمت الظلم على نفسي وجعلته بينكم محرماً، فلا تظالموا."
+                    <span class="ref">(رواه مسلم)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال الله تعالى: "يا عبادي، كلكم ضال إلا من هديته، فاستهدوني أهدكم."
+                    <span class="ref">(رواه مسلم)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال الله تعالى: "يا عبادي، كلكم جائع إلا من أطعمته، فاستطعموني أطعمكم."
+                    <span class="ref">(رواه مسلم)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال الله تعالى: "يا عبادي، لو أن أولكم وآخركم وإنسكم وجنكم كانوا على أتقى قلب رجل واحد منكم، ما زاد ذلك في ملكي شيئاً."
+                    <span class="ref">(رواه مسلم)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال الله تعالى: "يا عبادي، إنما هي أعمالكم أحصيها لكم، ثم أوفيكم إياها، فمن وجد خيراً فليحمد الله، ومن وجد غير ذلك فلا يلومن إلا نفسه."
+                    <span class="ref">(رواه مسلم)</span>
+                </div>
+            </div>
+
+            <div id="virtues-hadith" class="hadith-content" style="display:none;">
+                <h2>فضائل الأعمال</h2>
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "من قال: لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير، في يوم مائة مرة، كانت له عدل عشر رقاب، وكتبت له مائة حسنة، ومحيت عنه مائة سيئة، وكانت له حرزاً من الشيطان يومه ذلك حتى يمسي، ولم يأت أحد بأفضل مما جاء به إلا أحد عمل أكثر من ذلك."
+                    <span class="ref">(متفق عليه)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "من قرأ آية الكرسي دبر كل صلاة مكتوبة، لم يمنعه من دخول الجنة إلا أن يموت."
+                    <span class="ref">(رواه النسائي وصححه الألباني)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "من صلى الفجر في جماعة ثم قعد يذكر الله حتى تطلع الشمس، ثم صلى ركعتين، كانت له كأجر حجة وعمرة تامة تامة تامة."
+                    <span class="ref">(رواه الترمذي وقال: حديث حسن)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "من استغفر للمؤمنين والمؤمنات كتب الله له بكل مؤمن ومؤمنة حسنة."
+                    <span class="ref">(رواه الطبراني وحسنه الألباني)</span>
+                </div>
+
+                <div class="hadith-card">
+                    قال رسول الله ﷺ: "من دخل السوق فقال: لا إله إلا الله وحده لا شريك له، له الملك وله الحمد يحيي ويميت وهو حي لا يموت، بيده الخير وهو على كل شيء قدير، كتب الله له ألف ألف حسنة، ومحا عنه ألف ألف سيئة، ورفع له ألف ألف درجة."
+                    <span class="ref">(رواه الترمذي وقال: حديث حسن)</span>
+                </div>
+            </div>
+
+            <button class="btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> رجوع</button>
+        </div>
+
+        <!-- أذكار بعد الصلاة -->
+        <div id="prayer" class="section">
+            <h2>أذكار ما بعد الصلاة</h2>
+
+            <div class="hadith-card">
+                أستغفر الله (3 مرات)<br>
+                اللهم أنت السلام ومنك السلام تباركت يا ذا الجلال والإكرام
+            </div>
+
+            <div class="hadith-card">
+                لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير (10 مرات بعد صلاة الفجر والمغرب)
+            </div>
+
+            <div class="hadith-card">
+                اللهم أعني على ذكرك وشكرك وحسن عبادتك
+            </div>
+
+            <div class="hadith-card">
+                سبحان الله (33 مرة)، الحمد لله (33 مرة)، الله أكبر (34 مرة)
+                <span class="ref">(من قالها بعد كل صلاة غفرت ذنوبه وإن كانت مثل زبد البحر)</span>
+            </div>
+
+            <div class="hadith-card">
+                قراءة آية الكرسي (البقرة: 255)
+                <span class="ref">(من قرأها بعد كل صلاة لم يمنعه من دخول الجنة إلا الموت)</span>
+            </div>
+
+            <div class="hadith-card">
+                قراءة سورة الإخلاص، سورة الفلق، سورة الناس (3 مرات بعد صلاة الفجر والمغرب)
+                <span class="ref">(تكفيه من كل شيء)</span>
+            </div>
+
+            <div class="hadith-card">
+                اللهم إني أسألك علماً نافعاً، ورزقاً طيباً، وعملاً متقبلاً
+            </div>
+
+            <div class="hadith-card">
+                سبحان الله وبحمده (100 مرة)
+                <span class="ref">(من قالها في يوم غفرت ذنوبه وإن كانت مثل زبد البحر)</span>
+            </div>
+
+            <button class="btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> رجوع</button>
+        </div>
+
+        <!-- الأدعية المتنوعة -->
+        <div id="duaa" class="section">
+            <div class="nav-tabs">
+                <div class="nav-tab active" onclick="changeDuaaTab('daily')">أدعية يومية</div>
+                <div class="nav-tab" onclick="changeDuaaTab('specific')">أدعية خاصة</div>
+                <div class="nav-tab" onclick="changeDuaaTab('prophet')">أدعية الأنبياء</div>
+            </div>
+
+            <div id="daily-duaa" class="duaa-content">
+                <h2>أدعية يومية</h2>
+                <div class="duaa-card">
+                    <h3>دعاء الصباح</h3>
+                    اللهم بك أصبحنا، وبك أمسينا، وبك نحيا، وبك نموت، وإليك النشور.
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء المساء</h3>
+                    اللهم بك أمسينا، وبك أصبحنا، وبك نحيا، وبك نموت، وإليك المصير.
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء الهم والحزن</h3>
+                    اللهم إني أعوذ بك من الهم والحزن، والعجز والكسل، والجبن والبخل، وضلع الدين وغلبة الرجال.
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء الذهاب إلى المسجد</h3>
+                    اللهم اجعل في قلبي نوراً، وفي لساني نوراً، واجعل في سمعي نوراً، وفي بصري نوراً، واجعل من خلفي نوراً، ومن أمامي نوراً، واجعل من فوقي نوراً، ومن تحتي نوراً، اللهم أعطني نوراً.
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء دخول المنزل</h3>
+                    اللهم إني أسألك خير المولج وخير المخرج، بسم الله ولجنا، وبسم الله خرجنا، وعلى الله ربنا توكلنا.
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+            </div>
+
+            <div id="specific-duaa" class="duaa-content" style="display:none;">
+                <h2>أدعية خاصة</h2>
+                <div class="duaa-card">
+                    <h3>دعاء الكرب</h3>
+                    لا إله إلا الله العظيم الحليم، لا إله إلا الله رب العرش العظيم، لا إله إلا الله رب السماوات ورب الأرض ورب العرش الكريم.
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء المرض</h3>
+                    اللهم رب الناس، أذهب البأس، اشف أنت الشافي، لا شفاء إلا شفاؤك، شفاء لا يغادر سقماً.
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء السفر</h3>
+                    اللهم بك أصول وبك أجول وبك أسير، اللهم إني أعوذ بك من وعثاء السفر وكآبة المنظر وسوء المنقلب في المال والأهل.
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء الريح</h3>
+                    اللهم إني أسألك خيرها وخير ما فيها وخير ما أرسلت به، وأعوذ بك من شرها وشر ما فيها وشر ما أرسلت به.
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء المطر</h3>
+                    اللهم صيباً نافعاً، اللهم اجعله أمطار رحمة ولا تجعله أمطار عذاب، اللهم اسقنا غيثاً مغيثاً مريئاً مريعاً نافعاً غير ضار.
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+            </div>
+
+            <div id="prophet-duaa" class="duaa-content" style="display:none;">
+                <h2>أدعية الأنبياء</h2>
+                <div class="duaa-card">
+                    <h3>دعاء نوح عليه السلام</h3>
+                    رَّبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِمَن دَخَلَ بَيْتِيَ مُؤْمِنًا وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ وَلَا تَزِدِ الظَّالِمِينَ إِلَّا تَبَارًا.
+                    <span class="ref">(سورة نوح: 28)</span>
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء إبراهيم عليه السلام</h3>
+                    رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي ۚ رَبَّنَا وَتَقَبَّلْ دُعَاءِ * رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ.
+                    <span class="ref">(سورة إبراهيم: 40-41)</span>
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء موسى عليه السلام</h3>
+                    رَبِّ اشْرَحْ لِي صَدْرِي * وَيَسِّرْ لِي أَمْرِي * وَاحْلُلْ عُقْدَةً مِّن لِّسَانِي * يَفْقَهُوا قَوْلِي.
+                    <span class="ref">(سورة طه: 25-28)</span>
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء يونس عليه السلام</h3>
+                    لَّا إِلَٰهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ.
+                    <span class="ref">(سورة الأنبياء: 87)</span>
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div class="duaa-card">
+                    <h3>دعاء أيوب عليه السلام</h3>
+                    أَنِّي مَسَّنِيَ الضُّرُّ وَأَنتَ أَرْحَمُ الرَّاحِمِينَ.
+                    <span class="ref">(سورة الأنبياء: 83)</span>
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentNode)"><i class="far fa-copy"></i></button>
+                </div>
+            </div>
+
+            <button class="btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> رجوع</button>
+        </div>
+
+        <!-- الاستماع للقرآن -->
+        <div id="quran-audio" class="section">
+            <h2>الاستماع للقرآن الكريم</h2>
+
+            <div class="reciter-card" onclick="playRecitation('عبده خلف', 'audio/01.mp3')">
+                <h3>صورة الصافات للقارئ عبده خلف<span>✚</span></h3>
+                <div class="reciter-meta">تلاوة مجودة</div>
+            </div>
+
+            <div class="reciter-card" onclick="playRecitation('المنشاوي', 'audio/02.mp3')">
+                <h3>ماتيسر من القران القارئ المنشاوي<span>✚</span></h3>
+                <div class="reciter-meta">تلاوة مرتلة</div>
+            </div>
+
+            <div class="reciter-card" onclick="playRecitation('سعود الشريم', 'audio/03.mp3')">
+                <h3>  سورة يوسف للقارئ سعود الشريم<span>✚</span></h3>
+                <div class="reciter-meta">تلاوة مجودة</div>
+            </div>
+
+            <div class="reciter-card" onclick="playRecitation('الشيخ انس عفيفي', 'audio/04.mp4')">
+                <h3>سورةالملك للقارئ انس عفيفي<span>✚</span></h3>
+                <div class="reciter-meta">تلاوة مرتلة</div>
+            </div>
+
+            <div class="reciter-card" onclick="playRecitation('القارئ علي جابر', 'audio/05.m4A')">
+                <h3>ماتيسر من سورة الانفال للقارئ علي جابر<span>✚</span></h3>
+                <div class="reciter-meta">تلاوة مجودة</div>
+            </div>
+
+            <div id="audio-player-container" style="margin-top: 30px; display: none;">
+                <h3 id="now-playing">جاري التشغيل: </h3>
+                <audio id="audio-player" controls style="width: 100%;">
+                    المتصفح الخاص بك لا يدعم عنصر الصوت.
+                </audio>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+            </div>
+
+            <button class="btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> رجوع</button>
+        </div>
+
+        <!-- مواقيت الصلاة -->
+        <div id="prayer-times" class="section">
+            <h2>مواقيت الصلاة</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="city-select">اختر المدينة: </label>
+                <select id="city-select" onchange="updatePrayerTimes()" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd; background: var(--card-bg); color: var(--text-color);">
+                    <option value="riyadh">الحديدة</option>
+                    <option value="makkah">مكة المكرمة</option>
+                    <option value="madina">صنعاء</option>
+                    <option value="jeddah">اب</option>
+                    <option value="dammam">عدن</option>
+                </select>
+            </div>
+
+            <div class="prayer-time-card">
+                <div class="prayer-name">الفجر</div>
+                <div class="prayer-time" id="fajr-time">4:30 ص</div>
+            </div>
+
+            <div class="prayer-time-card">
+                <div class="prayer-name">الشروق</div>
+                <div class="prayer-time" id="sunrise-time">5:45 ص</div>
+            </div>
+
+            <div class="prayer-time-card current">
+                <div class="prayer-name">الظهر</div>
+                <div class="prayer-time" id="dhuhr-time">12:15 م</div>
+            </div>
+
+            <div class="prayer-time-card">
+                <div class="prayer-name">العصر</div>
+                <div class="prayer-time" id="asr-time">3:30 م</div>
+            </div>
+
+            <div class="prayer-time-card">
+                <div class="prayer-name">المغرب</div>
+                <div class="prayer-time" id="maghrib-time">6:45 م</div>
+            </div>
+
+            <div class="prayer-time-card">
+                <div class="prayer-name">العشاء</div>
+                <div class="prayer-time" id="isha-time">8:15 م</div>
+            </div>
+
+            <div style="margin-top: 20px; font-size: 0.9rem; color: #666;">
+                <i class="fas fa-info-circle"></i> يتم تحديث المواقيت تلقائياً حسب موقعك
+            </div>
+
+            <button class="btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> رجوع</button>
+        </div>
+
+        <!-- اتجاه القبلة -->
+        <div id="qibla" class="section">
+            <h2>اتجاه القبلة</h2>
+            
+            <div class="qibla-compass">
+                <div class="qibla-arrow" id="qibla-arrow"></div>
+            </div>
+            
+            <div class="qibla-text" id="qibla-direction">جاري تحديد الاتجاه...</div>
+            
+            <div style="margin-top: 20px; font-size: 0.9rem; color: #666;">
+                <i class="fas fa-info-circle"></i> قم بتدوير هاتفك لمعرفة اتجاه القبلة بدقة
+            </div>
+
+            <button class="btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> رجوع</button>
+        </div>
+
+        <!-- عداد التسبيح -->
+        <div id="tasbeeh" class="section">
+            <h2>عداد التسبيح</h2>
+            
+            <div class="tasbeeh-counter" id="counter">0</div>
+            
+            <button class="tasbeeh-btn" onclick="incrementCounter()">
+                <i class="fas fa-hand-pointer"></i>
+            </button>
+            
+            <div style="margin-top: 20px;">
+                <button class="btn" onclick="resetCounter()">إعادة تعيين</button>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <h3>أذكار مختارة</h3>
+                <select id="tasbeeh-select" onchange="setTasbeehText()" style="padding: 10px; width: 100%; max-width: 300px; border-radius: 8px; background: var(--card-bg); color: var(--text-color); border: 1px solid #ddd; margin-bottom: 15px;">
+                    <option value="سبحان الله">سبحان الله</option>
+                    <option value="الحمد لله">الحمد لله</option>
+                    <option value="الله أكبر">الله أكبر</option>
+                    <option value="لا إله إلا الله">لا إله إلا الله</option>
+                    <option value="أستغفر الله">أستغفر الله</option>
+                    <option value="سبحان الله وبحمده">سبحان الله وبحمده</option>
+                    <option value="سبحان الله العظيم">سبحان الله العظيم</option>
+                </select>
+                
+                <div id="selected-tasbeeh" style="font-size: 1.2rem; color: var(--primary-color); margin-bottom: 15px;">سبحان الله</div>
+            </div>
+
+            <button class="btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> رجوع</button>
+        </div>
+    </div>
+
+    <!-- زر الإضافات العائم -->
+    <button class="floating-btn" onclick="toggleExtrasMenu()">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- قائمة الإضافات -->
+    <div class="extras-menu" id="extras-menu">
+        <div class="extra-item" onclick="showSection('settings')">
+            <i class="fas fa-cog"></i>
+            <span>الإعدادات</span>
+        </div>
+        <div class="extra-item" onclick="showSection('about')">
+            <i class="fas fa-info-circle"></i>
+            <span>حول التطبيق</span>
+        </div>
+        <div class="extra-item" onclick="shareApp()">
+            <i class="fas fa-share-alt"></i>
+            <span>مشاركة التطبيق</span>
+        </div>
+        <div class="extra-item" onclick="rateApp()">
+            <i class="fas fa-star"></i>
+            <span>تقييم التطبيق</span>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي -->
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="showSection('morning')">
+            <i class="fas fa-sun"></i>
+            <span>الأذكار</span>
+        </div>
+        <div class="nav-item" onclick="showSection('quran')">
+            <i class="fas fa-book-quran"></i>
+            <span>القرآن</span>
+        </div>
+        <div class="nav-item" onclick="showSection('prayer-times')">
+            <i class="fas fa-clock"></i>
+            <span>مواقيت</span>
+        </div>
+        <div class="nav-item" onclick="showSection('tasbeeh')">
+            <i class="fas fa-hashtag"></i>
+            <span>التسبيح</span>
+        </div>
+    </div>
+
+    <!-- صفحة الإعدادات -->
+    <div id="settings" class="section" style="display:none;">
+        <h2>الإعدادات</h2>
+        
+        <div class="settings-card">
+            <div class="setting-item">
+                <span>الوضع الليلي</span>
+                <label class="switch">
+                    <input type="checkbox" id="night-mode-toggle" onchange="toggleNightMode(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-item">
+                <span>تشغيل الأذان</span>
+                <label class="switch">
+                    <input type="checkbox" id="athan-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-item">
+                <span>إشعارات الأذكار</span>
+                <label class="switch">
+                    <input type="checkbox" id="notifications-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-item">
+                <span>حجم الخط</span>
+                <select id="font-size" onchange="changeFontSize(this.value)" style="padding: 5px; border-radius: 5px; background: var(--card-bg); color: var(--text-color); border: 1px solid #ddd;">
+                    <option value="small">صغير</option>
+                    <option value="medium" selected>متوسط</option>
+                    <option value="large">كبير</option>
+                </select>
+            </div>
+        </div>
+        
+        <button class="btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> رجوع</button>
+    </div>
+
+    <!-- صفحة حول التطبيق -->
+    <div id="about" class="section" style="display:none;">
+        <h2>حول التطبيق</h2>
+        
+        <div class="about-card">
+            <p>التطبيق الإسلامي الشامل هو تطبيق مجاني يحتوي على مجموعة من الأدوات الإسلامية المفيدة للمسلمين في حياتهم اليومية.</p>
+            
+            <p>يحتوي التطبيق على:</p>
+            <ul style="text-align: right; margin-right: 20px;">
+                <li>أذكار الصباح والمساء</li>
+                <li>القرآن الكريم مع التفسير</li>
+                <li>الأحاديث النبوية الشريفة</li>
+                <li>مواقيت الصلاة حسب الموقع</li>
+                <li>اتجاه القبلة</li>
+                <li>عداد التسبيح</li>
+                <li>وأدوات إسلامية أخرى</li>
+            </ul>
+            
+            <p>إصدار التطبيق: 1.0.0</p>
+            <p>تاريخ الإصدار:10  محرم 1445هـ</p>
+        </div>
+        
+        <div class="social-links">
+            <a href="https://www.facebook.com/share/1At5ADFJcs/" class="social-link"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+        </div>
+        
+        <button class="btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left" style="margin-left: 8px;"></i> رجوع</button>
+    </div>
+
+    <!-- تنبيه النسخ -->
+    <div class="copy-alert" id="copy-alert">تم نسخ النص!</div>
+
+    <script>
+        // المتغيرات العامة
+        let currentAudio = null;
+        let counter = 0;
+        let currentTasbeeh = 'سبحان الله';
+        
+        // عرض/إخفاء الأقسام
+        function showSection(id) {
+            document.getElementById("main-menu").style.display = "none";
+            document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+            document.getElementById(id).style.display = "block";
+            
+            // إخفاء قائمة الإضافات إذا كانت مفتوحة
+            document.getElementById('extras-menu').style.display = 'none';
+            
+            // تشغيل بعض الوظائف الخاصة بكل قسم
+            if (id === 'qibla') {
+                initCompass();
+            }
+        }
+
+        function goBack() {
+            let sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.style.display = 'none');
+            document.getElementById("main-menu").style.display = "block";
+        }
+        
+        // تبديل الوضع الليلي
+        function toggleNight() {
+            document.body.classList.toggle("night");
+            const btn = document.querySelector(".toggle-night");
+            btn.textContent = document.body.classList.contains("night") ? "☀️" : "🌙";
+            
+            // تحديث حالة التبديل في الإعدادات
+            document.getElementById('night-mode-toggle').checked = document.body.classList.contains("night");
+        }
+        
+        function toggleNightMode(checked) {
+            if (checked) {
+                document.body.classList.add("night");
+                document.querySelector(".toggle-night").textContent = "☀️";
+            } else {
+                document.body.classList.remove("night");
+                document.querySelector(".toggle-night").textContent = "🌙";
+            }
+        }
+        
+        // تبديل علامات التبويب في الأذكار
+        function changeAzkarTab(tab) {
+            document.querySelectorAll('.azkar-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.azkar-content').forEach(c => c.style.display = 'none');
+            
+            document.querySelector(`.azkar-tab[onclick="changeAzkarTab('${tab}')"]`).classList.add('active');
+            document.getElementById(`${tab}-azkar`).style.display = 'block';
+        }
+        
+        // تبديل علامات التبويب في الأحاديث
+        function changeHadithTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.hadith-content').forEach(c => c.style.display = 'none');
+            
+            document.querySelector(`.nav-tab[onclick="changeHadithTab('${tab}')"]`).classList.add('active');
+            document.getElementById(`${tab}-hadith`).style.display = 'block';
+        }
+        
+        // تبديل علامات التبويب في الأدعية
+        function changeDuaaTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.duaa-content').forEach(c => c.style.display = 'none');
+            
+            document.querySelector(`.nav-tab[onclick="changeDuaaTab('${tab}')"]`).classList.add('active');
+            document.getElementById(`${tab}-duaa`).style.display = 'block';
+        }
+        
+        // البحث في القرآن
+        function searchQuran(query) {
+            if (query.length < 2) return;
+            
+            // هنا يمكنك إضافة وظيفة البحث الفعلية
+            console.log(`البحث عن: ${query}`);
+        }
+        
+        // عرض آيات السورة
+        function showAyaat(surahNum, surahName) {
+            document.getElementById('quran-results').style.display = 'none';
+            document.getElementById('surah-details').style.display = 'block';
+            document.getElementById('surah-name').textContent = `سورة ${surahName}`;
+            
+            // هنا يمكنك جلب آيات السورة من مصدر خارجي
+            // هذا مثال فقط:
+            document.getElementById('surah-content').textContent = `بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ`;
+        }
+        
+        function backToSuraList() {
+            document.getElementById('surah-details').style.display = 'none';
+            document.getElementById('quran-results').style.display = 'block';
+        }
+        
+        // تشغيل التلاوة
+        function playRecitation(reciter, audioFile) {
+            const playerContainer = document.getElementById('audio-player-container');
+            const player = document.getElementById('audio-player');
+            const nowPlaying = document.getElementById('now-playing');
+            
+            playerContainer.style.display = 'block';
+            nowPlaying.textContent = `جاري التشغيل: ${reciter}`;
+            
+            player.src = audioFile;
+            player.load();
+            player.play();
+            
+            // تحديث شريط التقدم
+            player.addEventListener('timeupdate', function() {
+                const progress = (player.currentTime / player.duration) * 100;
+                document.getElementById('progress-bar').style.width = progress + '%';
+                
+                // تحديث الوقت
+                document.getElementById('current-time').textContent = formatTime(player.currentTime);
+                document.getElementById('duration').textContent = formatTime(player.duration);
+            });
+            
+            // عند النقر على شريط التقدم
+            document.querySelector('.progress-container').addEventListener('click', function(e) {
+                const percent = e.offsetX / this.offsetWidth;
+                player.currentTime = percent * player.duration;
+            });
+        }
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // تحديث مواقيت الصلاة
+        function updatePrayerTimes() {
+            const city = document.getElementById('city-select').value;
+            // هنا يمكنك جلب مواقيت الصلاة حسب المدينة من API
+            // هذه مواقيت افتراضية فقط:
+            const times = {
+                riyadh: { fajr: '4:30', sunrise: '5:45', dhuhr: '12:15', asr: '3:30', maghrib: '6:45', isha: '8:15' },
+                makkah: { fajr: '4:45', sunrise: '6:00', dhuhr: '12:30', asr: '3:45', maghrib: '7:00', isha: '8:30' },
+                madina: { fajr: '4:40', sunrise: '5:55', dhuhr: '12:25', asr: '3:40', maghrib: '6:55', isha: '8:25' },
+                jeddah: { fajr: '4:50', sunrise: '6:05', dhuhr: '12:35', asr: '3:50', maghrib: '7:05', isha: '8:35' },
+                dammam: { fajr: '4:20', sunrise: '5:35', dhuhr: '12:05', asr: '3:20', maghrib: '6:35', isha: '8:05' }
+            };
+            
+            document.getElementById('fajr-time').textContent = times[city].fajr + ' ص';
+            document.getElementById('sunrise-time').textContent = times[city].sunrise + ' ص';
+            document.getElementById('dhuhr-time').textContent = times[city].dhuhr + ' م';
+            document.getElementById('asr-time').textContent = times[city].asr + ' م';
+            document.getElementById('maghrib-time').textContent = times[city].maghrib + ' م';
+            document.getElementById('isha-time').textContent = times[city].isha + ' م';
+        }
+        
+        // بوصلة القبلة
+        function initCompass() {
+            if (!window.DeviceOrientationEvent) {
+                document.getElementById('qibla-direction').textContent = 'المتصفح لا يدعم تحديد الاتجاه';
+                return;
+            }
+            
+            window.addEventListener('deviceorientation', function(event) {
+                const arrow = document.getElementById('qibla-arrow');
+                const directionText = document.getElementById('qibla-direction');
+                
+                // هذه زاوية افتراضية (يجب استبدالها بزاوية القبلة الحقيقية حسب موقع المستخدم)
+                const qiblaAngle = 45; // درجة نحو القبلة
+                
+                // زاوية الجهاز بالنسبة للشمال المغناطيسي
+                const deviceAngle = event.alpha; // 0-360
+                
+                // حساب زاوية الدوران نحو القبلة
+                const rotationAngle = (360 - deviceAngle + qiblaAngle) % 360;
+                
+                arrow.style.transform = `rotate(${rotationAngle}deg)`;
+                directionText.textContent = `اتجاه القبلة: ${Math.round(rotationAngle)} درجة`;
+            }, true);
+        }
+        
+        // عداد التسبيح
+        function incrementCounter() {
+            counter++;
+            document.getElementById('counter').textContent = counter;
+        }
+        
+        function resetCounter() {
+            counter = 0;
+            document.getElementById('counter').textContent = counter;
+        }
+        
+        function setTasbeehText() {
+            currentTasbeeh = document.getElementById('tasbeeh-select').value;
+            document.getElementById('selected-tasbeeh').textContent = currentTasbeeh;
+        }
+        
+        // نسخ النص
+        function copyToClipboard(element) {
+            const text = element.innerText.replace('نسخ', '').trim();
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyAlert();
+            });
+        }
+        
+        function showCopyAlert() {
+            const alert = document.getElementById('copy-alert');
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 2000);
+        }
+        
+        // قائمة الإضافات
+        function toggleExtrasMenu() {
+            const menu = document.getElementById('extras-menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
+        
+        // مشاركة التطبيق
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'التطبيق الإسلامي الشامل',
+                    text: 'تطبيق رائع يحتوي على القرآن، الأذكار، الأحاديث وأكثر!',
+                    url: window.location.href
+                }).catch(err => {
+                    console.log('Error sharing:', err);
+                });
+            } else {
+                alert('ميزة المشاركة غير متاحة في متصفحك. يمكنك نسخ الرابط يدوياً.');
+            }
+        }
+        
+        // تقييم التطبيق
+        function rateApp() {
+            alert('شكراً لك على تقييم التطبيق! سيتم توجيهك إلى متجر التطبيقات قريباً.');
+        }
+        
+        // تغيير حجم الخط
+        function changeFontSize(size) {
+            const body = document.body;
+            body.style.fontSize = size === 'small' ? '14px' : size === 'large' ? '18px' : '16px';
+        }
+        
+        // تهيئة أولية
+        document.addEventListener('DOMContentLoaded', function() {
+            // تحديث مواقيت الصلاة عند التحميل
+            updatePrayerTimes();
+            
+            // تعيين حجم الخط الافتراضي
+            changeFontSize('medium');
+            
+            // إخفاء قائمة الإضافات عند النقر خارجها
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.floating-btn') && !e.target.closest('.extras-menu')) {
+                    document.getElementById('extras-menu').style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+    <footer>
+        <p>
+            &#169; تم تطوير التطبيق بواسطة <span style="color: var(--primary-color);">مرتضى العفيفي</span> &middot; 
+            <a href="#" onclick="showSection('about')">حول التطبيق</a> &middot; 
+            <a href="#" onclick="showSection('settings')">الإعدادات</a>
+        </p>
+    </footer>
+</body>
+
+</html>
